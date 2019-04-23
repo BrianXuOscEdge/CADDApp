@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        jcr:primaryType="nt:unstructured"
+        jcr:title="AEM Projects | Create Master"
+        sling:resourceType="granite/ui/components/coral/foundation/page">
+        <head jcr:primaryType="nt:unstructured">
+            <viewport
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/admin/page/viewport"/>
+            <favicon
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/page/favicon"/>
+            <clientlibs
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/includeclientlibs"
+                categories="[coralui3,granite.ui.coral.foundation,cq.projects.admin.createprojectwizard,cq.projects.admin.form]"/>
+        </head>
+        <body
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="granite/ui/components/coral/foundation/page/body">
+            <items jcr:primaryType="nt:unstructured">
+                <form
+                    granite:class="cq-projects-admin-createproject"
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/coral/foundation/form"
+                    action="/content/projects"
+                    enctype="multipart/form-data"
+                    foundationForm="{Boolean}true"
+                    maximized="{Boolean}true"
+                    method="post"
+                    novalidate="{Boolean}true"
+                    style="vertical">
+                    <successresponse
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Success"
+                        sling:resourceType="cq/gui/components/projects/admin/form/openprompt"
+                        hideOpenButton="{Boolean}true"
+                        open="/projects.html{path}"
+                        redirect="/projects.html${granite:encodeURIPath(requestPathInfo.suffix)}"
+                        text="The Master Project was created"/>
+                    <items jcr:primaryType="nt:unstructured">
+                        <operation
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
+                            name=":operation"
+                            value="projectcreate"/>
+                        <charset
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
+                            name="_charset_"
+                            value="utf-8"/>
+                        <taskinfo
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="cq/gui/components/projects/admin/inbox/taskinfo"
+                            taskId="${param.taskid}"/>
+                        <wizard
+                            jcr:primaryType="nt:unstructured"
+                            jcr:title="Create Master Project"
+                            sling:resourceType="granite/ui/components/coral/foundation/wizard"
+                            cancelHref="${empty header.Referer ? granite:concat(&quot;/projects.html&quot;, granite:encodeURIPath(requestPathInfo.suffix)) : header.Referer}">
+                            <items jcr:primaryType="nt:unstructured">
+                                <container
+                                    granite:class="details-step-container"
+                                    jcr:primaryType="nt:unstructured"
+                                    jcr:title="Template"
+                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                    <items jcr:primaryType="nt:unstructured">
+                                        <templates
+                                            jcr:primaryType="nt:unstructured"
+                                            jcr:title="Template"
+                                            sling:resourceType="granite/ui/components/coral/foundation/form/advancedselect"
+                                            maximized="{Boolean}true"
+                                            name="templateorproject"
+                                            required="{Boolean}true">
+                                            <granite:data
+                                                jcr:primaryType="nt:unstructured"
+                                                foundation-validation-ui="none"/>
+                                            <field
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="granite/ui/components/coral/foundation/masonry"
+                                                selectionCount="single"
+                                                selectionMode="{Boolean}true">
+                                                <datasource
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="cq/gui/components/projects/admin/datasource/projecttemplatedatasource"
+                                                    itemResourceType="cq/gui/components/projects/admin/card/projecttemplatecard"
+                                                    path="/content/projects"/>
+                                            </field>
+                                            <parentConfig jcr:primaryType="nt:unstructured">
+                                                <next
+                                                    granite:class="foundation-wizard-control"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/button"
+                                                    disabled="{Boolean}true"
+                                                    text="Next"
+                                                    variant="primary">
+                                                    <granite:data
+                                                        jcr:primaryType="nt:unstructured"
+                                                        foundation-wizard-control-action="next"/>
+                                                </next>
+                                            </parentConfig>
+                                        </templates>
+                                        <taskinfo
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
+                                            name="taskid"
+                                            value="${param.taskid}"/>
+                                    </items>
+                                </container>
+                                <properties
+                                    jcr:primaryType="nt:unstructured"
+                                    jcr:title="Properties"
+                                    sling:resourceType="granite/ui/components/coral/foundation/wizard/lazycontainer"
+                                    src="/mnt/overlay/cq/core/content/projects/wizard/steps/master.html${granite:encodeURIPath(requestPathInfo.suffix)}?template={template}&amp;taskid={taskid}&amp;masterproject={masterproject}">
+                                    <parentConfig jcr:primaryType="nt:unstructured">
+                                        <next
+                                            granite:class="foundation-wizard-control"
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/button"
+                                            disabled="{Boolean}true"
+                                            text="Create"
+                                            type="submit"
+                                            variant="primary">
+                                            <granite:data
+                                                jcr:primaryType="nt:unstructured"
+                                                foundation-wizard-control-action="next"/>
+                                        </next>
+                                    </parentConfig>
+                                </properties>
+                            </items>
+                        </wizard>
+                    </items>
+                </form>
+            </items>
+        </body>
+    </jcr:content>
+</jcr:root>
