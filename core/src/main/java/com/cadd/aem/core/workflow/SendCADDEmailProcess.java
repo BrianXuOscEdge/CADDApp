@@ -9,7 +9,7 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.Activate;
-import org.apache.felix.scr.annotations.Component;
+//import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
@@ -32,9 +32,10 @@ import com.day.cq.workflow.exec.WorkItem;
 import com.day.cq.workflow.exec.WorkflowData;
 import com.day.cq.workflow.exec.WorkflowProcess;
 import com.day.cq.workflow.metadata.MetaDataMap;
+import org.osgi.service.component.annotations.Component;
 
 /**
- * This abstract <code>SendTemplatedEmailProcess</code> class is a WorkFlow process step
+ * This abstract <code>SendCADDEmailProcess</code> class is a WorkFlow process step
  * that will send an email using {@link EmailService EmailService}.
  * By default jcr properties from the payload are automatically added to the email parameter
  * map. If the payload is a cq:Page then the properties at the jcr:content level
@@ -44,13 +45,13 @@ import com.day.cq.workflow.metadata.MetaDataMap;
  * SendTemplatedEmailConstants} are also automatically added. <br>
  * This process will send the email to a CQ user or members of a CQ group
  * specified by the process argument
- * {@link SendTemplatedEmailProcess.Arguments#SEND_TO
+ * {@link SendCADDEmailProcess.Arguments#SEND_TO
  * SEND_TO} Implementing classes can override this logic by overriding the
  * method:
- * {@link SendTemplatedEmailProcess#getEmailAddrs(com.day.cq.workflow.exec.WorkItem, org.apache.sling.api.resource.Resource, java.lang.String[])
+ * {@link SendCADDEmailProcess#getEmailAddrs(com.day.cq.workflow.exec.WorkItem, org.apache.sling.api.resource.Resource, java.lang.String[])
  * getEmailAddrs() - method}<br>
  * Implementing classes can also add additional parameters by overriding the
- * {@link SendTemplatedEmailProcess#getAdditionalParams(WorkItem, WorkflowSession, Resource)
+ * {@link SendCADDEmailProcess#getAdditionalParams(WorkItem, WorkflowSession, Resource)
  * getAdditionalParams() - method}
  * <p>
  * <p>
@@ -73,12 +74,18 @@ import com.day.cq.workflow.metadata.MetaDataMap;
  * </dl>
  *
  */
-@Component
-@Property(label = "Workflow Label", name = "process.label", value = "Send CADD Email", description = "Sends a CADD email using the Email Service")
-@Service
-public class SendTemplatedEmailProcess implements WorkflowProcess {
+//@Component
+//@Property(label = "Workflow Label", name = "process.label", value = "Send CADD Email", description = "Sends a CADD email using the Email Service")
+//@Service
+@Component(service = WorkflowProcess.class,
+        property = {
+                "process.label = Send CADD Email",
+                "process.description = Sends a CADD email using the Email Service"
 
-    private static final Logger log = LoggerFactory.getLogger(SendTemplatedEmailProcess.class);
+        })
+public class SendCADDEmailProcess implements WorkflowProcess {
+
+    private static final Logger log = LoggerFactory.getLogger(SendCADDEmailProcess.class);
 
     /**
      * Service used to send the email
@@ -89,7 +96,7 @@ public class SendTemplatedEmailProcess implements WorkflowProcess {
     /**
      * Service used to generate a link to the payload on author environment
      */
-   // @Reference
+    // @Reference
     //private AuthorUIHelper authorUiHelper;
 
     @Reference
@@ -183,8 +190,8 @@ public class SendTemplatedEmailProcess implements WorkflowProcess {
             }
 
             // Get Url params
- //           Map<String, String> urlParams = getUrls(payloadRes);
- //           emailParams.putAll(urlParams);
+            //           Map<String, String> urlParams = getUrls(payloadRes);
+            //           emailParams.putAll(urlParams);
 
             // Get Additional Parameters to add
             Map<String, String> wfParams = getAdditionalParams(workItem, workflowSession, payloadRes);

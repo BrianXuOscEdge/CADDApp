@@ -1,0 +1,3 @@
+Subject: ${subject}
+
+New version of the PDF file is generated at ${pdfPath}

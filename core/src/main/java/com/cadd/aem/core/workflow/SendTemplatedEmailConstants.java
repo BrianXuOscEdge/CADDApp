@@ -4,7 +4,7 @@ import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Defines additional keys that are available for templates when using the
- * SendTemplatedEmailProcess
+ * SendCADDEmailProcess
  */
 @ProviderType
 public final class SendTemplatedEmailConstants {
