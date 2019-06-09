@@ -107,5 +107,21 @@
             <groupId>junit-addons</groupId>
             <artifactId>junit-addons</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.felix/org.apache.felix.scr.annotations -->
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.annotations</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-email -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-email</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
     </dependencies>
 </project>

@@ -44,7 +44,7 @@
             jcr:primaryType="nt:unstructured"
             jcr:title="CADD Reviewers"
             defaultMembers="[]"
-            roleclass="observers"
+            roleclass="observer"
             roleid="reviewers"/>
         <publishers
                 jcr:primaryType="nt:unstructured"

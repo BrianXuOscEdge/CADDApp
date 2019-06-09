@@ -38,40 +38,6 @@
                             sling:resourceType="granite/ui/components/coral/foundation/form/pathbrowser"
                             fieldLabel="Content Path"
                             name="contentPath"/>
-                    <priority
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                            name="taskPriority">
-                        <items jcr:primaryType="nt:unstructured">
-                            <high
-                                    jcr:primaryType="nt:unstructured"
-                                    text="High"
-                                    value="High"/>
-                            <medium
-                                    jcr:primaryType="nt:unstructured"
-                                    text="Medium"
-                                    value="Medium"/>
-                            <low
-                                    jcr:primaryType="nt:unstructured"
-                                    text="Low"
-                                    value="Low"/>
-                        </items>
-                    </priority>
-                    <duedate
-                            granite:rel="project-duedate"
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
-                            displayedFormat="YYYY-MM-DD HH:mm"
-                            fieldLabel="Due Date"
-                            minDate="today"
-                            name="taskDueDate"
-                            type="datetime"/>
-                    <duedatetypehint
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
-                            name="taskDueDate@TypeHint"
-                            type="datetime"
-                            value="Calendar"/>
                 </items>
             </column2>
         </items>
