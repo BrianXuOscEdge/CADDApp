@@ -26,13 +26,16 @@ import org.slf4j.LoggerFactory;
 //import com.adobe.acs.commons.wcm.AuthorUIHelper;
 import com.day.cq.commons.Externalizer;
 import com.day.cq.dam.commons.util.DamUtil;
-import com.day.cq.workflow.WorkflowException;
-import com.day.cq.workflow.WorkflowSession;
-import com.day.cq.workflow.exec.WorkItem;
-import com.day.cq.workflow.exec.WorkflowData;
-import com.day.cq.workflow.exec.WorkflowProcess;
-import com.day.cq.workflow.metadata.MetaDataMap;
-import org.osgi.service.component.annotations.Component;
+import com.adobe.granite.workflow.WorkflowException;
+import com.adobe.granite.workflow.WorkflowSession;
+import com.adobe.granite.workflow.exec.WorkItem;
+import com.adobe.granite.workflow.exec.WorkflowData;
+import com.adobe.granite.workflow.exec.WorkflowProcess;
+import com.adobe.granite.workflow.metadata.MetaDataMap;
+import org.osgi.service.component.annotations.*;
+
+
+
 
 /**
  * This abstract <code>SendCADDEmailProcess</code> class is a WorkFlow process step
@@ -74,24 +77,12 @@ import org.osgi.service.component.annotations.Component;
  * </dl>
  *
  */
-//@Component
-//@Property(label = "Workflow Label", name = "process.label", value = "Send CADD Email", description = "Sends a CADD email using the Email Service")
-//@Service
-@Component(service = WorkflowProcess.class,
-        property = {
-                "process.label = Send CADD Email",
-                "process.description = Sends a CADD email using the Email Service"
 
-        })
+@Component(service=WorkflowProcess.class, property = {"process.label=Send CADD Email"})
 public class SendCADDEmailProcess implements WorkflowProcess {
 
     private static final Logger log = LoggerFactory.getLogger(SendCADDEmailProcess.class);
 
-    /**
-     * Service used to send the email
-     */
-    @Reference
-    private EmailService emailService;
 
     /**
      * Service used to generate a link to the payload on author environment
@@ -101,12 +92,6 @@ public class SendCADDEmailProcess implements WorkflowProcess {
 
     @Reference
     private ResourceResolverFactory resourceResolverFactory;
-
-    /**
-     * used to generate a link to the payload on publish environment
-     */
-    @Reference
-    private Externalizer externalizer;
 
     /**
      * The available arguments to this process implementation.
@@ -145,6 +130,7 @@ public class SendCADDEmailProcess implements WorkflowProcess {
 
         final WorkflowData workflowData = workItem.getWorkflowData();
         final String type = workflowData.getPayloadType();
+        MetaDataMap dataMap = workflowData.getMetaDataMap();
 
         // Check if the payload is a path in the JCR
         if (!StringUtils.equals(type, "JCR_PATH")) {
@@ -168,14 +154,9 @@ public class SendCADDEmailProcess implements WorkflowProcess {
         // Get the path to the JCR resource from the payload
         final String payloadPath = workflowData.getPayload().toString();
 
-        // Get ResourceResolver
-        final Map<String, Object> authInfo = new HashMap<String, Object>();
-        authInfo.put(JcrResourceConstants.AUTHENTICATION_INFO_SESSION, workflowSession.getSession());
-        final ResourceResolver resourceResolver;
 
-        try {
-            resourceResolver = resourceResolverFactory.getResourceResolver(authInfo);
-            Resource payloadRes = resourceResolver.getResource(payloadPath);
+ //           resourceResolver = resourceResolverFactory.getResourceResolver(authInfo);
+ //           Resource payloadRes = resourceResolver.getResource(payloadPath);
 
             // Email Parameter map
             Map<String, String> emailParams = new HashMap<String, String>();
@@ -184,23 +165,25 @@ public class SendCADDEmailProcess implements WorkflowProcess {
             emailParams.put(SendTemplatedEmailConstants.JCR_PATH, payloadPath);
 
             // Get Payload params
-            Map<String, String> payloadProp = SendTemplatedEmailUtils.getPayloadProperties(payloadRes, sdf);
+ /*           Map<String, String> payloadProp = SendTemplatedEmailUtils.getPayloadProperties(payloadRes, sdf);
             if (payloadProp != null) {
                 emailParams.putAll(payloadProp);
             }
-
+*/
             // Get Url params
             //           Map<String, String> urlParams = getUrls(payloadRes);
             //           emailParams.putAll(urlParams);
 
             // Get Additional Parameters to add
+ /*
             Map<String, String> wfParams = getAdditionalParams(workItem, workflowSession, payloadRes);
             emailParams.putAll(wfParams);
-
+*/
             // get email addresses based on CQ user or group
-            String[] emailTo = getEmailAddrs(workItem, payloadRes, args);
+            ResourceResolver resolver = workflowSession.adaptTo(ResourceResolver.class);
+            String[] emailTo = getEmailAddrs(workItem, resolver, args);
 
-            List<String> failureList = emailService.sendEmail(emailTemplate, emailParams, emailTo);
+            List<String> failureList = EmailService.sendEmail(emailTemplate, emailParams, emailTo);
 
             if (failureList.isEmpty()) {
                 log.info("Email sent successfully to {} recipients", emailTo.length);
@@ -208,9 +191,6 @@ public class SendCADDEmailProcess implements WorkflowProcess {
                 log.error("Email sent failed");
             }
 
-        } catch (LoginException e) {
-            log.error("Could not acquire a ResourceResolver object from the Workflow Session's JCR Session: {}", e);
-        }
     }
 
     /***
@@ -221,14 +201,11 @@ public class SendCADDEmailProcess implements WorkflowProcess {
      *
      * @param workItem
      *            the current WorkItem in the workflow
-     * @param payloadResource
-     *            the current payload as a Resource
      * @param args
      *            process arguments configured by the workflow step
      * @return String[] of email addresses
      */
-    protected String[] getEmailAddrs(WorkItem workItem, Resource payloadResource, String[] args) {
-        ResourceResolver resolver = payloadResource.getResourceResolver();
+    protected String[] getEmailAddrs(WorkItem workItem, ResourceResolver resolver, String[] args) {
         String sendToUser = getValueFromArgs(Arguments.SEND_TO.getArgumentName(), args);
         return SendTemplatedEmailUtils.getEmailAddrsFromUserPath(resolver, sendToUser);
     }

@@ -81,8 +81,8 @@ public final class EmailService{
             throw new IllegalArgumentException("Invalid Recipients");
         }
 
-        final MailTemplate mailTemplate = this.getMailTemplate(templatePath);
-        final Class<? extends Email> mailType = this.getMailType(templatePath);
+        final MailTemplate mailTemplate = getMailTemplate(templatePath);
+        final Class<? extends Email> mailType = getMailType(templatePath);
         final MessageGateway<Email> messageGateway = messageGatewayService.getGateway(mailType);
 
         for (final InternetAddress address : recipients) {
@@ -100,7 +100,7 @@ public final class EmailService{
         return failureList;
     }
 
-    private Email getEmail(final MailTemplate mailTemplate,
+    private static Email getEmail(final MailTemplate mailTemplate,
                            final Class<? extends Email> mailType,
                            final Map<String, String> params) throws EmailException, MessagingException, IOException {
 
@@ -120,11 +120,11 @@ public final class EmailService{
         return email;
     }
 
-    private Class<? extends Email> getMailType(String templatePath) {
+    private static Class<? extends Email> getMailType(String templatePath) {
         return templatePath.endsWith(".html") ? HtmlEmail.class : SimpleEmail.class;
     }
 
-    private MailTemplate getMailTemplate(String templatePath) throws IllegalArgumentException {
+    private static MailTemplate getMailTemplate(String templatePath) throws IllegalArgumentException {
         MailTemplate mailTemplate = null;
         ResourceResolver resourceResolver = null;
         try {
